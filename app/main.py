@@ -5,7 +5,7 @@ from fastapi.staticfiles import StaticFiles
 from app.core.db import engine, Base
 from app.api import stock  # 新增：引入路由模块
 from app.services.alert_service import init_alert
-from app.api import stock, purchase, report, home
+from app.api import stock, purchase, report, home, sales
 from app.models import goods  # 确保模型被导入
 
 
@@ -26,6 +26,7 @@ app.include_router(home.router)
 app.include_router(stock.router)
 app.include_router(purchase.router)
 app.include_router(report.router)
+app.include_router(sales.router)
 
 
 @app.get("/ping")

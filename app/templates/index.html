@@ -35,6 +35,23 @@
     <button onclick="location.href='/api/report/slow.xlsx'">下载滞销表</button>
     </section>
 
+    <section>
+    <h2>采购建议（真实销量）</h2>
+    <input id="bc" placeholder="条码">
+    <button onclick="showSuggest()">计算</button>
+    <p id="suggestRes"></p>
+</section>
+
+<script>
+async function showSuggest(){
+    const bc = document.getElementById('bc').value;
+    const res = await fetch(`/api/purchase/suggest?barcode=${bc}&lead_days=7&safety_days=3`);
+    const data = await res.json();
+    document.getElementById('suggestRes').innerText =
+        `日均销量：${data.daily_sale} 盒，建议采购：${data.suggest_qty} 盒`;
+}
+</script>
+
     <script>
         async function stockIn() {
             const bc = document.getElementById('barcode').value;

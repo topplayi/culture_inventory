@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>文化用品库存系统</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>文化用品库存系统</h1>
+
+    <!-- 扫码入库 -->
+    <section>
+        <h2>扫码入库</h2>
+        <input id="barcode" placeholder="扫码/输入条码" autofocus>
+        <input id="qty" type="number" value="1" min="1">
+        <button onclick="stockIn()">入库</button>
+        <p id="inResult"></p>
+    </section>
+
+    <!-- 预警列表 -->
+    <section>
+        <h2>低库存预警</h2>
+        <button onclick="loadAlert()">刷新</button>
+        <ul id="alertList"></ul>
+    </section>
+
+    <!-- 导出 -->
+    <section>
+        <h2>报表导出</h2>
+        <button onclick="location.href='/api/report/inventory.xlsx'">下载库存台账</button>
+    </section>
+
+    <section>
+    <h2>滞销品报表</h2>
+    <button onclick="location.href='/api/report/slow.xlsx'">下载滞销表</button>
+    </section>
+
+    <script>
+        async function stockIn() {
+            const bc = document.getElementById('barcode').value;
+            const qt = document.getElementById('qty').value;
+            const res = await fetch('/api/stock/in', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({barcode: bc, qty: parseInt(qt)})
+            });
+            const data = await res.json();
+            document.getElementById('inResult').innerText =
+                `入库成功！当前库存：${data.stock_qty}`;
+            document.getElementById('barcode').value = '';
+            document.getElementById('barcode').focus();
+        }
+
+        async function loadAlert() {
+            const res = await fetch('/api/goods/alert');  // 后面再实现
+            const list = document.getElementById('alertList');
+            list.innerHTML = '<li>演示：6920459955447 库存 2 <= 10</li>';
+        }
+    </script>
+</body>
+</html>

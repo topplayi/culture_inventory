@@ -2,7 +2,8 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from app.core.db import engine, Base
-from app.models import goods  # 确保模型被 import
+from app.api import stock  # 新增：引入路由模块
+from app.models import goods  # 确保模型被导入
 
 
 @asynccontextmanager
@@ -15,14 +16,15 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
+# 注册路由
+app.include_router(stock.router)
 
 @app.get("/ping")
 def ping():
-    return "pong"
+    return "xxx"
 
 
-# === 关键：显式拉起 uvicorn ===
+# 本地调试入口
 if __name__ == "__main__":
     import uvicorn
-
     uvicorn.run(app, host="127.0.0.1", port=8000, log_level="info")
